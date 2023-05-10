@@ -24,17 +24,6 @@ class User(models.Model):
     def __str__(self):
         return self.username
 
-    def serialize(self):
-        return {
-            'id': self.id,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'username': self.username,
-            'age': self.age,
-            'locations': [loc.name for loc in self.locations.all()],
-            'role': self.role
-        }
-
 
 class Location(models.Model):
     name = models.CharField(max_length=200, unique=True)

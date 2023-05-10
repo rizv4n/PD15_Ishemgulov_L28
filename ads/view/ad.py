@@ -1,32 +1,61 @@
 import json
 
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from rest_framework.generics import ListAPIView
 
 from ads.models import Ad, Category
+from ads.serializers import AdListSerializer
 from users.models import User
+from users.views import UserListView
 
 TOTAL_ON_PAGE = 5
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class AdListView(ListView):
-    queryset = Ad.objects.order_by('-price')
+class AdListView(ListAPIView):
+    queryset = Ad.objects.all()
+    serializer_class = AdListSerializer
 
     def get(self, request, *args, **kwargs):
-        super().get(request, *args, **kwargs)
-        paginator = Paginator(self.object_list, TOTAL_ON_PAGE)
-        page_number = request.GET.get('page')
-        ads = paginator.get_page(page_number)
-        return JsonResponse({
-            'total': paginator.count,
-            'num_pages': paginator.num_pages,
-            'items': [ad.serialize() for ad in ads]
-        }, safe=False)
+        ad_text = request.GET.get('text', None)
+        ad_categories = request.GET.getlist('cat', None)
+        ad_price_from = request.GET.get('price_from', None)
+        ad_price_to = request.GET.get('price_to', None)
+        ad_location = request.GET.get('loc', None)
+
+        if ad_text:
+            self.queryset = self.queryset.filter(
+                name__contains=ad_text
+            )
+
+        if ad_price_from and ad_price_to:
+            self.queryset = self.queryset.filter(
+                price__gte=ad_price_from,
+                price__lte=ad_price_to
+            )
+
+        if ad_location:
+            self.queryset = self.queryset.filter(
+                author_id__name__icontains=ad_location
+            )
+
+        ad_cat_q = None
+
+        for cat in ad_categories:
+            if ad_cat_q is None:
+                ad_cat_q = Q(category__id__icontains=cat)
+            else:
+                ad_cat_q |= Q(category__id__icontains=cat)
+
+        if ad_cat_q:
+            self.queryset = self.queryset.filter(ad_cat_q)
+
+        return super().get(request, *args, **kwargs)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
