@@ -41,7 +41,7 @@ class AdListView(ListAPIView):
 
         if ad_location:
             self.queryset = self.queryset.filter(
-                author_id__name__icontains=ad_location
+                author__locations__name__icontains=ad_location
             )
 
         ad_cat_q = None
