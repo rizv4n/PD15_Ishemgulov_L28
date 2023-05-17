@@ -1,11 +1,11 @@
 from django.db import models
 
-from users.models import User
+from authentication.models import User
 
 
 class Ad(models.Model):
     name = models.CharField(max_length=200)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     price = models.PositiveIntegerField()
     description = models.TextField()
     address = models.CharField(max_length=200)
