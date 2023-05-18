@@ -20,19 +20,6 @@ class Ad(models.Model):
     def __str__(self):
         return self.name
 
-    def serialize(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'author': self.author.username,
-            'price': self.price,
-            'description': self.description,
-            'category': self.category.name,
-            'address': self.address,
-            'is_published': self.is_published,
-            'image': self.image.url if self.image else None
-        }
-
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -49,3 +36,9 @@ class Category(models.Model):
             'id': self.id,
             'name': self.name
         }
+
+
+class Selection(models.Model):
+    name = models.CharField(max_length=200)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    items = models.ManyToManyField(Ad)

@@ -10,7 +10,8 @@ urlpatterns = [
     path('', root),
     path('cat/', include('ads.urls.category')),
     path('ad/', include('ads.urls.ad')),
-    path('user/', include('authentication.urls'))
+    path('user/', include('authentication.urls')),
+    path('selection/', include('ads.urls.selection')),
 ]
 
 if settings.DEBUG:

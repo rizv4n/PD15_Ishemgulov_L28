@@ -1,5 +1,3 @@
-import json
-
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
@@ -13,7 +11,6 @@ from ads.models import Ad
 from ads.permissions import AdChangePermission
 from ads.serializers import AdListSerializer, AdCreateSerializer, AdDetailSerializer, AdDeleteSerializer, \
     AdUpdateSerializer
-from authentication.models import User
 
 
 class AdListView(ListAPIView):
