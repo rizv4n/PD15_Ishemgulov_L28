@@ -8,7 +8,18 @@ class AdChangePermission(BasePermission):
 
     def has_object_permission(self, request, view, obj):
 
-        if obj.author.role == view.request.data['author'] or obj.author.role in [UserRoles.ADMIN, UserRoles.MODERATOR]:
+        if obj.author.username == str(request.user) or request.user.role in [UserRoles.ADMIN, UserRoles.MODERATOR]:
+            return True
+        else:
+            return False
+
+
+class SelectionChangePermission(BasePermission):
+    message = "Changing for non Admin user not allowed"
+
+    def has_object_permission(self, request, view, obj):
+
+        if obj.owner.username == str(request.user) or request.user.role in [UserRoles.ADMIN, UserRoles.MODERATOR]:
             return True
         else:
             return False
