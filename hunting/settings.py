@@ -56,9 +56,9 @@ WSGI_APPLICATION = 'hunting.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'l_28_db',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'PASSWORD': 'hbpdfy1999',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -104,3 +104,5 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'authentication.User'
+
+DJANGO_SETTINGS_MODULE = "hunting.settings"

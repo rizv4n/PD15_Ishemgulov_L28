@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MinLengthValidator, MaxLengthValidator
 from django.db import models
 
 from authentication.models import User
@@ -6,8 +7,8 @@ from authentication.models import User
 class Ad(models.Model):
     name = models.CharField(max_length=200)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    price = models.PositiveIntegerField()
-    description = models.TextField()
+    price = models.PositiveIntegerField(validators=[MinValueValidator(0)])
+    description = models.TextField(null=True)
     address = models.CharField(max_length=200)
     category = models.ForeignKey('ads.Category', on_delete=models.CASCADE)
     is_published = models.BooleanField(default=False)
@@ -23,6 +24,7 @@ class Ad(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
 
     class Meta:
         verbose_name = 'Категория'
@@ -34,7 +36,8 @@ class Category(models.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'slug': self.slug
         }
 
 

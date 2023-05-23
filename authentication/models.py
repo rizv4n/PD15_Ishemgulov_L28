@@ -12,6 +12,8 @@ class User(AbstractUser):
 
     age = models.PositiveSmallIntegerField()
     role = models.CharField(max_length=9, choices=UserRoles.choices, default=UserRoles.MEMBER)
+    birthday = models.DateField()
+    email = models.EmailField(max_length=200, unique=True)
 
     class Meta:
         verbose_name = 'Пользователь'

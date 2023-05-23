@@ -4,8 +4,10 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
+from rest_framework.generics import CreateAPIView
 
-from ads.models import Category
+from ads.models import Category, Selection
+from ads.serializers import CategoryCreateSerializer
 
 
 def root(request):
@@ -21,15 +23,9 @@ class CategoryListView(ListView):
         return JsonResponse([cat.serialize() for cat in categories], safe=False)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class CategoryCreateView(CreateView):
-    model = Category
-    fields = '__all__'
-
-    def post(self, request, *args, **kwargs):
-        category_data = json.loads(request.body)
-        category = Category.objects.create(**category_data)
-        return JsonResponse(category.serialize())
+class CategoryCreateView(CreateAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = CategoryCreateSerializer
 
 
 class CategoryDetailView(DetailView):
